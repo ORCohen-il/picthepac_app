@@ -1,0 +1,5 @@
+C:\Users\Or.c\AppData\Local\Android\Sdk\emulator
+
+emulator -avd avd_name [ {-option [value]} … ]
+
+https://developer.android.com/studio/run/emulator-commandline
