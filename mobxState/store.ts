@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {
   makeObservable,
@@ -16,11 +17,13 @@ class Store {
   @observable
   order: order_Model = new order_Model();
   orders: order_Model[] = [];
+  openOrders: order_Model[] = [];
+  token: String = "";
 
   constructor() {
     makeAutoObservable(this, {});
     autorun(() => {
-      this.getOrders();
+      // this.getOrders();
     });
     runInAction(() => {
       // this.onDelivery()
@@ -32,16 +35,40 @@ class Store {
 
   async getOrders() {
     return new Promise(async (resolve, reject) => {
-      // console.log(`token === ${sessionStorage.getItem('token')}`);
+      this.token = await AsyncStorage.getItem("@token");
+
       await axios
         .get(globals.urls.deliveries, {
-          params: { token: "K2v6JyyqjbaPKVoxsfWN64" }
+          params: { token: this.token }
         })
         .then((res) => {
-          // if (res.data.loginSuccess == true) {
-          if (res) {
+          // console.log(res.data);
+          if (res.data) {
             this.orders = res.data;
-            resolve(res.data);
+            resolve(true);
+          } else {
+            this.orders = [];
+            resolve(false);
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+  async getOpenOrders() {
+    return new Promise(async (resolve, reject) => {
+      this.token = await AsyncStorage.getItem("@token");
+
+      await axios
+        .get(globals.urls.deliveries, {
+          params: { token: this.token }
+        })
+        .then((res) => {
+          // console.log(res.data);
+          if (res.data) {
+            this.orders = res.data;
+            resolve(true);
           } else {
             this.orders = [];
             resolve(false);

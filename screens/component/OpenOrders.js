@@ -18,7 +18,7 @@ let PhasenModal = (props) => {
 				<Button icon="phone-outgoing-outline" mode="contained" onPress={() => Linking.openURL(`tel:0502419634`)}>
 					חייג
 				</Button>
-				<Button icon="waze" mode="contained" onPress={() => Linking.openURL(`https://waze.com/ul?q=${props.order.city}${props.order.address}`)}>
+				<Button icon="waze" mode="contained" onPress={() => console.log('Pressed')}>
 					נווט
 				</Button>
 				<Button icon="update" mode="contained" onPress={() => console.log('Pressed')}>
@@ -32,9 +32,9 @@ let PhasenModal = (props) => {
 }
 
 
-function OrderList(props) {
+function OpenOrders(props) {
 	// const [orders, SetOrders] = React.useState(store.orders);
-	const [searchQuery, setSearchQuery] = React.useState(store.orders);
+	const [searchQuery, setSearchQuery] = React.useState(store.openOrders);
 
 	const onChangeSearch = query => {
 		try {
@@ -52,9 +52,7 @@ function OrderList(props) {
 	};
 
 	React.useEffect(() => {
-		// console.log(store.orders);
-		{ searchQuery.length == 0 && setSearchQuery(store.orders) }
-		// console.log(store.orders);
+		// { searchQuery.length == 0 && setSearchQuery(store.orders) }
 	}, []);
 
 
@@ -70,13 +68,13 @@ function OrderList(props) {
 						value={searchQuery}
 						style={{ borderRadius: 25 }}
 					/>
-					{searchQuery?.map((order, i) => {
+					{/* {searchQuery?.map((order, i) => {
 						return [
 							<List.Accordion key={i + 2} theme={{ colors: { background: 'transparent' } }} style={styles.containerList} title={` מ' ${order.order_number} - ${order.address} ${order.city} `} id={`${i}`} left={PackageImg}>
-								<PhasenModal key={i} orderDate={`${order.delivery_date}`} orderTime={`${order.delivery_time}`} order={order} />
+								<PhasenModal key={i} orderDate={`${order.delivery_date}`} orderTime={`${order.delivery_time}`} />
 							</List.Accordion>
 						];
-					})}
+					})} */}
 				</List.AccordionGroup>
 			</ScrollView>
 
@@ -110,5 +108,5 @@ const styles = StyleSheet.create({
 
 });
 
-export default OrderList;
+export default OpenOrders;
 

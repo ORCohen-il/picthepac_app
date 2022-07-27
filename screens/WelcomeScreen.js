@@ -3,10 +3,12 @@ import {
 	StyleSheet, Text, View, StatusBar, SafeAreaView, Image, TouchableOpacity, Dimensions,
 	TextInput, Button, ToastAndroid, Alert, Linking, Platform
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import axios from "axios";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import store from '../mobxState/store';
 
 
 
@@ -21,7 +23,7 @@ function WelcomeScreen({ navigation }) {
 	const supportedURL = "https://google.com";
 
 	const checkLogin = async () => {
-		 navigation.navigate('Home')
+		// navigation.navigate('Home')
 		loading(true)
 
 		setTimeout(() => {
@@ -29,14 +31,15 @@ function WelcomeScreen({ navigation }) {
 				email: username,
 				password: password
 			}
-			axios.post(`${baseUrl}/login`, params).then((response) => {
-				let Toast = 'login UnSuccess';
+			axios.post(`${baseUrl}/login`, params).then(async (response) => {
 				if (response.data.loginSuccess) {
-					Toast = 'login Success';
+					console.log(response.data.token);
+					await AsyncStorage.setItem('@token', response.data.token);
+					await store.getOrders()
 					navigation.navigate('Home')
+				} else {
+					ToastAndroid.show(`login failed`, ToastAndroid.BOTTOM);
 				}
-				// setMsg("")
-				ToastAndroid.show(`${Toast}`, ToastAndroid.BOTTOM);
 
 				loading(false)
 

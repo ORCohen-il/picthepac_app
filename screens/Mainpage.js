@@ -1,5 +1,6 @@
 import React from 'react';
 import OrderList from "./component/OrderList";
+import OpenOrders from "./component/OpenOrders";
 import axios from "axios";
 import store from "../mobxState/store";
 
@@ -8,42 +9,38 @@ import {
 	TextInput, Button, ToastAndroid, Alert, Linking, Platform
 } from 'react-native';
 
-// const [orders, SetOrders] = React.useState("");
-
-const baseUrl = 'http://143.47.232.141:9050';
-
-const getOpenOrders = async () => {
-	// store
-	// console.log(store.name);
-
-	await axios.get(`${baseUrl}/deliveries/`, { params: { token: 'K2v6JyyqjbaPKVoxsfWN64', } }).then((response) => {
-		// console.log(response.data);
-		// SetOrders(response.data)
-		// ToastAndroid.show(`${Toast}`, ToastAndroid.CENTER);
-	});
-
-}
 
 
 function Mainpage(props) {
+	const [screen, SetScreen] = React.useState(0);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.containerBody}>
 				<View style={styles.top} >
 					<View style={styles.icons}>
-						<TouchableOpacity onPress={getOpenOrders}>
-							<Image source={require('../assets/icons/openOrder.png')} style={styles.iconClick} />
+						<TouchableOpacity onPress={() => SetScreen(0)}>
+							<Image source={require('../assets/icons/list.png')} style={styles.iconClick} />
+						</TouchableOpacity>
+						<TouchableOpacity onPress={() => SetScreen(1)}>
+							<Image source={require('../assets/icons/open.png')} style={styles.iconClick} />
 						</TouchableOpacity>
 						<TouchableOpacity>
-							<Image source={require('../assets/banner.jpg')} style={styles.iconClick} />
-						</TouchableOpacity>
-						<TouchableOpacity>
-							<Image source={require('../assets/banner.jpg')} style={styles.iconClick} />
+							<Image source={require('../assets/icons/to-do-list.png')} style={styles.iconClick} />
 						</TouchableOpacity>
 					</View>
+					<View
+						style={{
+							borderBottomColor: 'black',
+							borderBottomWidth: StyleSheet.hairlineWidth,
+						}}
+					/>
 				</View>
+
 				<View style={styles.middle} >
-					<OrderList />
+					{screen === 0 && <OrderList />}
+					{screen === 1 && <OpenOrders />}
+					{screen === 2 && <OrderList />}
 				</View>
 			</View>
 		</SafeAreaView>
@@ -75,8 +72,10 @@ const styles = StyleSheet.create({
 	},
 	middle: {
 		flex: 0.85,
-		width: "100%",
-		borderWidth: 4,
+		width: "95%",
+		padding: 10,
+		borderRadius: 100,
+		// borderWidth: 4,
 	},
 	icons: {
 		flex: 1,
@@ -91,7 +90,7 @@ const styles = StyleSheet.create({
 		// margin: 26,
 		width: 60,
 		height: 60,
-		borderRadius: 100
+		// borderRadius: 100
 	},
 
 
