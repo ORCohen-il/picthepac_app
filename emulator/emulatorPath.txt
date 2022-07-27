@@ -1,4 +1,5 @@
 C:\Users\Or.c\AppData\Local\Android\Sdk\emulator
+C:\Users\ocohe\AppData\Local\Android\Sdk\emulator
 
 emulator -avd avd_name [ {-option [value]} … ]
 

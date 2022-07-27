@@ -1,0 +1,5 @@
+export enum Notif {
+  LOGIN_SUCCUSS = "LOGIN_SUCCUSS",
+  NETWORK_ERROR = "NETWORK_ERROR",
+  // public NETWORK_ERROR = "NETWORK_ERROR"
+}

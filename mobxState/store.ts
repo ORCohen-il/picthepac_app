@@ -10,6 +10,7 @@ import {
   configure
 } from "mobx";
 import React from "react";
+import { ToastAndroid } from "react-native";
 import globals from "../globals/globals";
 import { order_Model } from "../models/orderModal";
 
@@ -19,6 +20,7 @@ class Store {
   orders: order_Model[] = [];
   openOrders: order_Model[] = [];
   token: String = "";
+  name: String = "";
 
   constructor() {
     makeAutoObservable(this, {});
@@ -79,6 +81,29 @@ class Store {
         });
     });
   }
+
+  async Login(username: string, password: string) {
+    return new Promise(async (resolve, reject) => {
+      let params = { email: username, password: password }
+      await axios.post(`${globals.urls.login}`, params).then(async (res) => {
+        if (res.data.loginSuccess) {
+          await AsyncStorage.setItem('@token', res.data.token);
+          await store.getOrders()
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      }).catch((err) => {
+        reject(err)
+        return;
+      });
+
+
+    });
+
+  }
+
+
 }
 
 const store = new Store();
