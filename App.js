@@ -1,5 +1,5 @@
 import React from "react";
-import WelcomeScreen from "./screens/WelcomeScreen";
+import Login from "./screens/Login";
 import HomeScreen from "./screens/Mainpage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -13,8 +13,8 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="WelcomeScreen">
-        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Login">
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>

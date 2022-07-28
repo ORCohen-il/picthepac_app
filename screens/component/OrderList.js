@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, I18nManager, Linking } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, I18nManager, Linking, KeyboardAvoidingView } from "react-native";
 import axios from "axios";
 import store from "../../mobxState/store";
 import { Avatar, Button, Card, Title, Paragraph, List, Searchbar } from "react-native-paper";
@@ -66,9 +66,10 @@ function OrderList(props) {
   return (
     <View>
       <ScrollView style={styles.scrollView}>
+
         <List.AccordionGroup>
           <Searchbar
-            placeholder="Search"
+            placeholder="מספר משלוח"
             onChangeText={onChangeSearch}
             value={searchQuery}
             style={{ borderRadius: 25 }}
@@ -99,7 +100,10 @@ function OrderList(props) {
 }
 
 const styles = StyleSheet.create({
-  scrollView: {},
+
+  scrollView: {
+
+  },
   containerList: {
     direction: "rtl",
     borderRadius: 80,

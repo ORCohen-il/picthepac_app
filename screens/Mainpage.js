@@ -1,11 +1,13 @@
 import React from 'react';
 import OrderList from "./component/OrderList";
 import OpenOrders from "./component/OpenOrders";
+import Settings from './component/Settings';
+
 import axios from "axios";
 import store from "../mobxState/store";
 
 import {
-	StyleSheet, Text, View, StatusBar, SafeAreaView, Image, TouchableOpacity, Dimensions,
+	StyleSheet, Text, View, StatusBar, SafeAreaView, Image, TouchableOpacity, Dimensions, KeyboardAvoidingView,
 	TextInput, Button, ToastAndroid, Alert, Linking, Platform
 } from 'react-native';
 
@@ -17,33 +19,40 @@ function Mainpage(props) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.containerBody}>
-				<View style={styles.top} >
-					<View style={styles.icons}>
-						<TouchableOpacity onPress={() => SetScreen(0)}>
-							<Image source={require('../assets/icons/list.png')} style={styles.iconClick} />
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => SetScreen(1)}>
-							<Image source={require('../assets/icons/open.png')} style={styles.iconClick} />
-						</TouchableOpacity>
-						<TouchableOpacity>
-							<Image source={require('../assets/icons/to-do-list.png')} style={styles.iconClick} />
-						</TouchableOpacity>
+				<KeyboardAvoidingView
+					behavior={Platform.OS === "ios" ? "padding" : "height"}
+					style={styles.containerBody}
+				>
+					<View style={styles.top} >
+						<View style={styles.icons}>
+							<TouchableOpacity onPress={() => SetScreen(0)}>
+								<Image source={require('../assets/icons/list.png')} style={styles.iconClick} />
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => SetScreen(1)}>
+								<Image source={require('../assets/icons/to-do-list.png')} style={styles.iconClick} />
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => SetScreen(2)}>
+								<Image source={require('../assets/icons/Settings-icon.png')} style={styles.iconClick} />
+							</TouchableOpacity>
+						</View>
 					</View>
-					<View
-						style={{
-							borderBottomColor: 'black',
-							borderBottomWidth: StyleSheet.hairlineWidth,
-						}}
-					/>
-				</View>
 
-				<View style={styles.middle} >
-					{screen === 0 && <OrderList />}
-					{screen === 1 && <OpenOrders />}
-					{screen === 2 && <OrderList />}
-				</View>
+					<View style={styles.middle} >
+						{/* <View
+							style={{
+								borderBottomColor: 'black',
+								borderBottomWidth: StyleSheet.hairlineWidth,
+							}}
+						/> */}
+						{screen === 0 && <OrderList />}
+						{screen === 1 && <OpenOrders />}
+						{screen === 2 && <Settings />}
+					</View>
+				</KeyboardAvoidingView>
+
 			</View>
 		</SafeAreaView>
+
 	);
 
 
@@ -61,18 +70,16 @@ const styles = StyleSheet.create({
 	},
 	containerBody: {
 		flex: 1,
-		alignItems: "center"
 	},
 	top: {
-		flex: 0.1,
-		width: "100%",
-		// marginBottom: "5%",
-		// marginTop: "5%",
+		flex: 0.12,
+		width: "95%",
 		paddingTop: 20,
+		// borderWidth: 4,
 	},
 	middle: {
-		flex: 0.85,
-		width: "95%",
+		flex: 0.92,
+		width: "100%",
 		padding: 10,
 		borderRadius: 100,
 		// borderWidth: 4,
