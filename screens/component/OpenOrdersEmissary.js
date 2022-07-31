@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, I18nManager, Linking } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, I18nManager, Linking, RefreshControl } from "react-native";
 import axios from "axios";
 import store from "../../mobxState/store";
 import { Avatar, Button, Card, Title, Paragraph, List, Searchbar } from "react-native-paper";
@@ -12,10 +12,21 @@ const PackageImg = (props) => (
   <Avatar.Icon {...props} icon="package-variant-closed" style={{ height: 50, width: 50 }} />
 );
 
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 function OpenOrdersEmissary(props) {
   const [searchQuery, setSearchQuery] = React.useState(store.openOrdersEmissary);
   const [visible, setVisible] = React.useState(false);
   const [order, setOrder] = React.useState({});
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(async () => { await store.getOpenEmissary(); setSearchQuery(store.openOrdersEmissary) }).then(() => setRefreshing(false));
+  }, []);
 
   const onChangeSearch = (query) => {
     try {
@@ -38,7 +49,13 @@ function OpenOrdersEmissary(props) {
 
   return (
     <View style={{ height: "100%" }}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
         <List.AccordionGroup>
           <Searchbar
             placeholder="מספר משלוח"
@@ -68,7 +85,7 @@ function OpenOrdersEmissary(props) {
                     <Button
                       icon="waze"
                       mode="contained"
-                      onPress={() => Linking.openURL(`https://waze.com/ul?q=${order.city}${order.address}`)}
+                      onPress={() => Linking.openURL(`https://waze.com/ul?q=${order.city}%20${order.address}%20${"20"}`)}
                     >
                       נווט
                     </Button>
@@ -97,9 +114,9 @@ const styles = StyleSheet.create({
     direction: "rtl",
     borderRadius: 80,
     backgroundColor: "transparent",
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "white",
-    margin: 3,
+    margin: 5,
   },
 
   buttonsOpt: {

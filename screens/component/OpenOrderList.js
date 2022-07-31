@@ -8,6 +8,7 @@ import {
   I18nManager,
   Linking,
   KeyboardAvoidingView,
+  RefreshControl
 } from "react-native";
 import axios from "axios";
 import store from "../../mobxState/store";
@@ -21,11 +22,22 @@ const PackageImg = (props) => (
   <Avatar.Icon {...props} icon="package-variant-closed" style={{ height: 50, width: 50 }} />
 );
 
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 function OpenOrderList(props) {
   // const [orders, SetOrders] = React.useState(store.orders);
   const [searchQuery, setSearchQuery] = React.useState(store.orders);
   const [visible, setVisible] = React.useState(false);
   const [order, setOrder] = React.useState({});
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(async () => { await store.openOrders(); setSearchQuery(store.orders) }).then(() => setRefreshing(false));
+  }, []);
 
   const onChangeSearch = (query) => {
     try {
@@ -49,7 +61,13 @@ function OpenOrderList(props) {
 
   return (
     <View>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
         <List.AccordionGroup>
           <Searchbar
             placeholder="מספר משלוח"
@@ -79,7 +97,7 @@ function OpenOrderList(props) {
                     <Button
                       icon="waze"
                       mode="contained"
-                      onPress={() => Linking.openURL(`https://waze.com/ul?q=${order.city}${order.address}`)}
+                      onPress={() => Linking.openURL(`https://waze.com/ul?q=${order.city}%20${order.address}%20${"20"}`)}
                     >
                       נווט
                     </Button>

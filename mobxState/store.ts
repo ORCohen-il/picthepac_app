@@ -24,6 +24,9 @@ class Store {
   login_user: LoginUser = {};
   name: String = "";
 
+  source = axios.CancelToken.source();
+
+
   constructor() {
     makeAutoObservable(this, {});
     autorun(() => {
@@ -60,7 +63,6 @@ class Store {
     });
   }
 
-
   async getOpenEmissary() {
     return new Promise(async (resolve, reject) => {
       this.login_user.token = await AsyncStorage.getItem("@token");
@@ -86,29 +88,27 @@ class Store {
 
   async Login(username: string, password: string) {
     return new Promise(async (resolve, reject) => {
-      let params = { email: username, password: password }
-      await axios.post(`${globals.urls.login}`, params).then(async (res) => {
-        if (res.data.loginSuccess) {
-          this.login_user = res.data
-          await AsyncStorage.setItem('@token', this.login_user.token);
-          await store.openOrders()
-          await store.getOpenEmissary()
-          resolve(true)
-        } else {
-          resolve(false)
-        }
-      }).catch((err) => {
-        console.log(err);
-        reject(err)
-        return;
-      });
-
-
+      let params = { email: username, password: password };
+      await axios
+        .post(`${globals.urls.login}`, params, { timeout: 10000 })
+        .then(async (res) => {
+          if (res.data.loginSuccess) {
+            this.login_user = res.data;
+            await AsyncStorage.setItem("@token", this.login_user.token);
+            await store.openOrders();
+            await store.getOpenEmissary();
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+          return;
+        });
     });
-
   }
-
-
 }
 
 const store = new Store();

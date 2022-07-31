@@ -18,9 +18,9 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import axios from "axios";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import axios from "axios";
+// import { NavigationContainer } from "@react-navigation/native";
+// import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import store from "../mobxState/store";
 import { Notif } from "../models/notif";
 
@@ -32,21 +32,25 @@ function Login({ navigation }) {
 
   const checkLogin = async () => {
     loading(true);
-
     store
       .Login(username, password)
       .then((res) => {
         if (res) {
+          onChangeUsername("")
+          onChangePassword("")
+          setMsg("")
           navigation.navigate("Home");
           loading(!res);
           ToastAndroid.show(`login Success`, ToastAndroid.BOTTOM);
         } else {
           ToastAndroid.show(`login failed`, ToastAndroid.BOTTOM);
+          setMsg("שם המשתמש או הסיסמה אינם תקינים")
           loading(false);
         }
       })
       .catch((err) => {
         ToastAndroid.show(`${Notif.NETWORK_ERROR}`, ToastAndroid.BOTTOM);
+        setMsg("קיימת שגיאה רשת")
         loading(false);
         return;
       });
@@ -71,19 +75,22 @@ function Login({ navigation }) {
                 />
               </View>
             )}
+
           </View>
+
           <View style={styles.middle}>
+            {msg != "" && <Text style={{ textAlign: "center" }}>{msg}</Text>}
             <TextInput
               style={styles.input}
-              onChangeText={onChangeUsername}
-              value={String(username)}
+              onChangeText={(e) => { onChangeUsername(String(e)) }}
+              value={username}
               placeholder="Username"
-              keyboardType="ascii-capable"
+              keyboardType="default"
             />
             <TextInput
               style={styles.input}
-              onChangeText={onChangePassword}
-              value={String(password)}
+              onChangeText={(e) => { onChangePassword(String(e)) }}
+              value={password}
               placeholder="Password"
               keyboardType="default"
             />
@@ -119,10 +126,10 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 15,
     width: window.width,
-    height: 90,
+    height: 150,
   },
   box_loading: {
-    marginTop: 40,
+    marginTop: 30,
     alignItems: "center",
     width: "20%",
   },

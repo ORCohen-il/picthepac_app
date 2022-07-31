@@ -25,13 +25,14 @@ import {
   Platform,
 } from "react-native";
 
-function Mainpage(props) {
+function Mainpage({ props, navigation }) {
   const [screen, SetScreen] = React.useState(0);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.containerBody}>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.containerBody}>
+        <KeyboardAvoidingView behavior={Platform.OS === "android" ? "padding" : "height"} style={styles.containerBody}>
+          {/* <KeyboardAvoidingView behavior='position' style = {{backgroundColor: 'white', flex: 1}}> */}
           <View style={styles.top}>
             <View style={styles.icons}>
               <TouchableOpacity onPress={() => SetScreen(0)}>
@@ -49,7 +50,7 @@ function Mainpage(props) {
           <View style={styles.middle}>
             {screen === 0 && <OpenOrderList />}
             {screen === 1 && <OpenOrdersEmissary />}
-            {screen === 2 && <Settings />}
+            {screen === 2 && <Settings navigation={navigation} />}
           </View>
         </KeyboardAvoidingView>
       </View>
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5b042",
   },
   containerBody: {
-    flex: 1,
+    flex: 1
   },
   top: {
     flex: 0.12,
