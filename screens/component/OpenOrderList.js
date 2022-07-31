@@ -1,8 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, I18nManager, Linking, KeyboardAvoidingView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  I18nManager,
+  Linking,
+  KeyboardAvoidingView,
+} from "react-native";
 import axios from "axios";
 import store from "../../mobxState/store";
 import { Avatar, Button, Card, Title, Paragraph, List, Searchbar } from "react-native-paper";
+import Dialog from "./dialog";
 
 //icons from
 // https://materialdesignicons.com/
@@ -11,35 +21,11 @@ const PackageImg = (props) => (
   <Avatar.Icon {...props} icon="package-variant-closed" style={{ height: 50, width: 50 }} />
 );
 
-let PhasenModal = (props) => {
-  return (
-    <Card.Content style={styles.openCard} key={props.key}>
-      <View style={styles.buttonsOpt}>
-        <Button icon="phone-outgoing-outline" mode="contained" onPress={() => Linking.openURL(`tel:0502419634`)}>
-          חייג
-        </Button>
-        <Button
-          icon="waze"
-          mode="contained"
-          onPress={() => Linking.openURL(`https://waze.com/ul?q=${props.order.city}${props.order.address}`)}
-        >
-          נווט
-        </Button>
-        <Button icon="update" mode="contained" onPress={() => console.log("Pressed")}>
-          עדכון
-        </Button>
-      </View>
-      <Paragraph style={{ textAlign: "center", fontSize: 15, fontWeight: "bold" }}>
-        {" "}
-        מועד משלוח {`${props.orderTime} ${props.orderDate} `}
-      </Paragraph>
-    </Card.Content>
-  );
-};
-
-function OrderList(props) {
+function OpenOrderList(props) {
   // const [orders, SetOrders] = React.useState(store.orders);
   const [searchQuery, setSearchQuery] = React.useState(store.orders);
+  const [visible, setVisible] = React.useState(false);
+  const [order, setOrder] = React.useState({});
 
   const onChangeSearch = (query) => {
     try {
@@ -56,17 +42,14 @@ function OrderList(props) {
   };
 
   React.useEffect(() => {
-    // console.log(store.orders);
     {
       searchQuery.length == 0 && setSearchQuery(store.orders);
     }
-    // console.log(store.orders);
   }, []);
 
   return (
     <View>
       <ScrollView style={styles.scrollView}>
-
         <List.AccordionGroup>
           <Searchbar
             placeholder="מספר משלוח"
@@ -84,33 +67,50 @@ function OrderList(props) {
                 id={`${i}`}
                 left={PackageImg}
               >
-                <PhasenModal
-                  key={i}
-                  orderDate={`${order.delivery_date}`}
-                  orderTime={`${order.delivery_time}`}
-                  order={order}
-                />
+                <Card.Content style={styles.openCard} key={props.key}>
+                  <View style={styles.buttonsOpt}>
+                    <Button
+                      icon="phone-outgoing-outline"
+                      mode="contained"
+                      onPress={() => Linking.openURL(`tel:${order.phone}`)}
+                    >
+                      חייג
+                    </Button>
+                    <Button
+                      icon="waze"
+                      mode="contained"
+                      onPress={() => Linking.openURL(`https://waze.com/ul?q=${order.city}${order.address}`)}
+                    >
+                      נווט
+                    </Button>
+                    <Button icon="update" mode="contained" onPress={() => setVisible(true)}>
+                      עדכון
+                    </Button>
+                  </View>
+                  <Paragraph style={{ textAlign: "center", fontSize: 15, fontWeight: "bold" }}>
+                    {" "}
+                    מועד משלוח {`${order.delivery_date} ${order.delivery_time} `}
+                  </Paragraph>
+                </Card.Content>
               </List.Accordion>,
             ];
           })}
         </List.AccordionGroup>
       </ScrollView>
+      {visible && <Dialog closed={(bool) => setVisible(bool)} parm={order} />}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
-  scrollView: {
-
-  },
+  scrollView: {},
   containerList: {
     direction: "rtl",
     borderRadius: 80,
     backgroundColor: "transparent",
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "white",
-    margin: 3,
+    margin: 5,
   },
 
   buttonsOpt: {
@@ -121,9 +121,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexDirection: "row",
   },
+  openCard: {},
   Button: {
     width: 20,
   },
 });
 
-export default OrderList;
+export default OpenOrderList;

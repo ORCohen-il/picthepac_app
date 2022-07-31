@@ -54,12 +54,7 @@ function Login({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-
-
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
         <StatusBar style="auto" />
         <View>
           <Image source={require("../assets/banner.jpg")} style={styles.banner} />
@@ -69,7 +64,11 @@ function Login({ navigation }) {
           <View style={styles.top}>
             {isloading && (
               <View style={styles.box_loading}>
-                <Image source={require("../assets/gif/loading.gif")} style={styles.image_loading} resizeMode={"cover"} />
+                <Image
+                  source={require("../assets/gif/loading.gif")}
+                  style={styles.image_loading}
+                  resizeMode={"cover"}
+                />
               </View>
             )}
           </View>
@@ -77,14 +76,14 @@ function Login({ navigation }) {
             <TextInput
               style={styles.input}
               onChangeText={onChangeUsername}
-              value={username}
+              value={String(username)}
               placeholder="Username"
-              keyboardType="default"
+              keyboardType="ascii-capable"
             />
             <TextInput
               style={styles.input}
               onChangeText={onChangePassword}
-              value={password}
+              value={String(password)}
               placeholder="Password"
               keyboardType="default"
             />
@@ -179,4 +178,3 @@ const styles = StyleSheet.create({
 });
 
 export default Login;
-

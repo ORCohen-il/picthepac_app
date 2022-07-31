@@ -12,14 +12,16 @@ import {
 import React from "react";
 import { ToastAndroid } from "react-native";
 import globals from "../globals/globals";
+import { LoginUser } from "../models/LoginUser";
 import { order_Model } from "../models/orderModal";
+import { order_EmissaryModel } from "../models/order_emissaryModel";
 
 class Store {
   @observable
   order: order_Model = new order_Model();
   orders: order_Model[] = [];
-  openOrders: order_Model[] = [];
-  token: String = "";
+  openOrdersEmissary: order_EmissaryModel[] = [];
+  login_user: LoginUser = {};
   name: String = "";
 
   constructor() {
@@ -35,16 +37,15 @@ class Store {
     });
   }
 
-  async getOrders() {
+  /** { req {}, res {data of openOrders} } **/
+  async openOrders() {
     return new Promise(async (resolve, reject) => {
-      this.token = await AsyncStorage.getItem("@token");
-
+      this.login_user.token = await AsyncStorage.getItem("@token");
       await axios
-        .get(globals.urls.deliveries, {
-          params: { token: this.token }
+        .get(`${globals.urls.deliveries}/open`, {
+          params: { token: this.login_user.token }
         })
         .then((res) => {
-          // console.log(res.data);
           if (res.data) {
             this.orders = res.data;
             resolve(true);
@@ -58,21 +59,22 @@ class Store {
         });
     });
   }
-  async getOpenOrders() {
-    return new Promise(async (resolve, reject) => {
-      this.token = await AsyncStorage.getItem("@token");
 
+
+  async getOpenEmissary() {
+    return new Promise(async (resolve, reject) => {
+      this.login_user.token = await AsyncStorage.getItem("@token");
       await axios
-        .get(globals.urls.deliveries, {
-          params: { token: this.token }
+        .get(`${globals.urls.deliveries}/openEmissary`, {
+          params: { token: this.login_user.token, aid: this.login_user.aid }
         })
         .then((res) => {
-          // console.log(res.data);
           if (res.data) {
-            this.orders = res.data;
+            this.openOrdersEmissary = res.data;
+            // console.log(this.openOrdersEmissary);
             resolve(true);
           } else {
-            this.orders = [];
+            this.openOrdersEmissary = [];
             resolve(false);
           }
         })
@@ -87,13 +89,16 @@ class Store {
       let params = { email: username, password: password }
       await axios.post(`${globals.urls.login}`, params).then(async (res) => {
         if (res.data.loginSuccess) {
-          await AsyncStorage.setItem('@token', res.data.token);
-          await store.getOrders()
+          this.login_user = res.data
+          await AsyncStorage.setItem('@token', this.login_user.token);
+          await store.openOrders()
+          await store.getOpenEmissary()
           resolve(true)
         } else {
           resolve(false)
         }
       }).catch((err) => {
+        console.log(err);
         reject(err)
         return;
       });
