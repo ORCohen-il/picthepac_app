@@ -29,9 +29,13 @@ function Mainpage({ props, navigation }) {
   const [screen, SetScreen] = React.useState(0);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.containerBody}>
-        <KeyboardAvoidingView behavior={Platform.OS === "android" ? "padding" : "height"} style={styles.containerBody}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.container}>
+
+        <View style={styles.containerBody}>
           {/* <KeyboardAvoidingView behavior='position' style = {{backgroundColor: 'white', flex: 1}}> */}
           <View style={styles.top}>
             <View style={styles.icons}>
@@ -52,29 +56,28 @@ function Mainpage({ props, navigation }) {
             {screen === 1 && <OpenOrdersEmissary />}
             {screen === 2 && <Settings navigation={navigation} />}
           </View>
-        </KeyboardAvoidingView>
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView >
+    </KeyboardAvoidingView>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight - 40 : 0,
     flex: 1,
     backgroundColor: "#f5b042",
   },
   containerBody: {
-    flex: 1
+    flex: 1,
   },
   top: {
-    flex: 0.12,
-    width: "95%",
+    flex: 0.15,
     paddingTop: 20,
-    // borderWidth: 4,
+    borderWidth: 4,
   },
   middle: {
-    flex: 0.92,
+    flex: 0.85,
     width: "100%",
     padding: 10,
     borderRadius: 100,

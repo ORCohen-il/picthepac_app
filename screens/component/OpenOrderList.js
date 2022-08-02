@@ -8,7 +8,8 @@ import {
   I18nManager,
   Linking,
   KeyboardAvoidingView,
-  RefreshControl
+  RefreshControl,
+  Platform
 } from "react-native";
 import axios from "axios";
 import store from "../../mobxState/store";
@@ -60,68 +61,79 @@ function OpenOrderList(props) {
   }, []);
 
   return (
-    <View>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }>
-        <List.AccordionGroup>
-          <Searchbar
-            placeholder="מספר משלוח"
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            style={{ borderRadius: 25 }}
-          />
-          {searchQuery?.map((order, i) => {
-            return [
-              <List.Accordion
-                key={i + 2}
-                theme={{ colors: { background: "transparent" } }}
-                style={styles.containerList}
-                title={` מ' ${order.order_number} - ${order.address} ${order.city} `}
-                id={`${i}`}
-                left={PackageImg}
-              >
-                <Card.Content style={styles.openCard} key={props.key}>
-                  <View style={styles.buttonsOpt}>
-                    <Button
-                      icon="phone-outgoing-outline"
-                      mode="contained"
-                      onPress={() => Linking.openURL(`tel:${order.phone}`)}
-                    >
-                      חייג
-                    </Button>
-                    <Button
-                      icon="waze"
-                      mode="contained"
-                      onPress={() => Linking.openURL(`https://waze.com/ul?q=${order.city}%20${order.address}%20${"20"}`)}
-                    >
-                      נווט
-                    </Button>
-                    <Button icon="update" mode="contained" onPress={() => setVisible(true)}>
-                      עדכון
-                    </Button>
-                  </View>
-                  <Paragraph style={{ textAlign: "center", fontSize: 15, fontWeight: "bold" }}>
-                    {" "}
-                    מועד משלוח {`${order.delivery_date} ${order.delivery_time} `}
-                  </Paragraph>
-                </Card.Content>
-              </List.Accordion>,
-            ];
-          })}
-        </List.AccordionGroup>
-      </ScrollView>
-      {visible && <Dialog closed={(bool) => setVisible(bool)} parm={order} />}
-    </View>
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.container}
+    >
+      <View>
+
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }>
+          <List.AccordionGroup>
+            <Searchbar
+              placeholder="מספר משלוח"
+              onChangeText={onChangeSearch}
+              value={searchQuery}
+              style={{ borderRadius: 25 }}
+            />
+            {searchQuery?.map((order, i) => {
+              return [
+                <List.Accordion
+                  key={i + 2}
+                  theme={{ colors: { background: "transparent" } }}
+                  style={styles.containerList}
+                  title={` מ' ${order.order_number} - ${order.address} ${order.city} `}
+                  id={`${i}`}
+                  left={PackageImg}
+                >
+                  <Card.Content style={styles.openCard} key={props.key}>
+                    <View style={styles.buttonsOpt}>
+                      <Button
+                        icon="phone-outgoing-outline"
+                        mode="contained"
+                        onPress={() => Linking.openURL(`tel:${order.phone}`)}
+                      >
+                        חייג
+                      </Button>
+                      <Button
+                        icon="waze"
+                        mode="contained"
+                        onPress={() => Linking.openURL(`https://waze.com/ul?q=${order.city}%20${order.address}%20${"20"}`)}
+                      >
+                        נווט
+                      </Button>
+                      <Button icon="update" mode="contained" onPress={() => setVisible(true)}>
+                        עדכון
+                      </Button>
+                    </View>
+                    <Paragraph style={{ textAlign: "center", fontSize: 15, fontWeight: "bold" }}>
+                      {" "}
+                      מועד משלוח {`${order.delivery_date} ${order.delivery_time} `}
+                    </Paragraph>
+                  </Card.Content>
+                </List.Accordion>,
+              ];
+            })}
+          </List.AccordionGroup>
+        </ScrollView>
+
+        {visible && <Dialog closed={(bool) => setVisible(bool)} parm={order} />}
+      </View>
+    </KeyboardAvoidingView>
+
   );
 }
 
 const styles = StyleSheet.create({
   scrollView: {},
+  // container: {
+  //   flex: 1
+  // },
   containerList: {
     direction: "rtl",
     borderRadius: 80,
