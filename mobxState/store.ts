@@ -46,7 +46,7 @@ class Store {
     return new Promise(async (resolve, reject) => {
       this.login_user.token = await AsyncStorage.getItem("@token");
       await axios
-        .get(`${globals.urls.deliveries}/open`, {
+        .get(`${globals.urls.deliveries}`, {
           params: { token: this.login_user.token }
         })
         .then((res) => {
@@ -68,7 +68,7 @@ class Store {
     return new Promise(async (resolve, reject) => {
       this.login_user.token = await AsyncStorage.getItem("@token");
       await axios
-        .get(`${globals.urls.deliveries}/openEmissary`, {
+        .get(`${globals.urls.deliveries}/emissary`, {
           params: { token: this.login_user.token, aid: this.login_user.aid }
         })
         .then((res) => {
