@@ -9,12 +9,13 @@ import {
   Linking,
   KeyboardAvoidingView,
   RefreshControl,
-  Platform
+  Platform,
 } from "react-native";
 import axios from "axios";
 import store from "../../mobxState/store";
 import { Avatar, Button, Card, Title, Paragraph, List, Searchbar } from "react-native-paper";
 import Dialog from "./dialog";
+import { order_Model } from "../../models/orderModal";
 
 //icons from
 // https://materialdesignicons.com/
@@ -24,20 +25,25 @@ const PackageImg = (props) => (
 );
 
 const wait = (timeout) => {
-  return new Promise(resolve => setTimeout(resolve, timeout));
-}
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 function OpenOrderList(props) {
   // const [orders, SetOrders] = React.useState(store.orders);
   const [searchQuery, setSearchQuery] = React.useState(store.orders);
   const [visible, setVisible] = React.useState(false);
-  const [order, setOrder] = React.useState({});
+  const [order, setOrder] = React.useState(new order_Model());
 
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    wait(2000).then(async () => { await store.openOrders(); setSearchQuery(store.orders) }).then(() => setRefreshing(false));
+    wait(2000)
+      .then(async () => {
+        await store.openOrders();
+        setSearchQuery(store.orders);
+      })
+      .then(() => setRefreshing(false));
   }, []);
 
   const onChangeSearch = (query) => {
@@ -61,19 +67,13 @@ function OpenOrderList(props) {
   }, []);
 
   return (
-    <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    style={styles.container}
-    >
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <View>
-
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollView}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollView}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
           <List.AccordionGroup>
             <Searchbar
               placeholder="מספר משלוח"
@@ -103,11 +103,20 @@ function OpenOrderList(props) {
                       <Button
                         icon="waze"
                         mode="contained"
-                        onPress={() => Linking.openURL(`https://waze.com/ul?q=${order.city}%20${order.address}%20${"20"}`)}
+                        onPress={() =>
+                          Linking.openURL(`https://waze.com/ul?q=${order.city}%20${order.address}%20${"20"}`)
+                        }
                       >
                         נווט
                       </Button>
-                      <Button icon="update" mode="contained" onPress={() => setVisible(true)}>
+                      <Button
+                        icon="update"
+                        mode="contained"
+                        onPress={() => {
+                          setVisible(true);
+                          setOrder(order);
+                        }}
+                      >
                         עדכון
                       </Button>
                     </View>
@@ -122,10 +131,9 @@ function OpenOrderList(props) {
           </List.AccordionGroup>
         </ScrollView>
 
-        {visible && <Dialog closed={(bool) => setVisible(bool)} parm={order} />}
+        {visible && <Dialog closed={(bool) => setVisible(bool)} order={order} />}
       </View>
     </KeyboardAvoidingView>
-
   );
 }
 

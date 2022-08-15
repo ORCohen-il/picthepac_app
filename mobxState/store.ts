@@ -12,6 +12,7 @@ import {
 import React from "react";
 import { ToastAndroid } from "react-native";
 import globals from "../globals/globals";
+import { EmissaryDetails } from "../models/EmissaryDetails";
 import { LoginUser } from "../models/LoginUser";
 import { order_Model } from "../models/orderModal";
 import { order_EmissaryModel } from "../models/order_emissaryModel";
@@ -23,7 +24,7 @@ class Store {
   openOrdersEmissary: order_EmissaryModel[] = [];
   login_user: LoginUser = {};
   name: String = "";
-
+  EmDetails: EmissaryDetails = new EmissaryDetails();
   source = axios.CancelToken.source();
 
 
@@ -95,6 +96,7 @@ class Store {
           if (res.data.loginSuccess) {
             this.login_user = res.data;
             await AsyncStorage.setItem("@token", this.login_user.token);
+            await store.getEmissaryDetails(this.login_user.aid);
             await store.openOrders();
             await store.getOpenEmissary();
             resolve(true);
@@ -108,6 +110,46 @@ class Store {
           return;
         });
     });
+  }
+
+  async getEmissaryDetails(aid: number) {
+    return new Promise(async (resolve, reject) => {
+      this.login_user.token = await AsyncStorage.getItem("@token");
+      await axios
+        .get(`${globals.urls.extensions}/emissary`, {
+          params: { aid: aid, token: this.login_user.token }
+        })
+        .then((res) => {
+          if (res.data) {
+            this.EmDetails = res.data[0];
+            resolve(true);
+          } else {
+            this.EmDetails = {
+              "aid": 0,
+              "city": "לא זוהה",
+              "email": "0",
+              "id": 0,
+              "name": "לא זוהה",
+              "phone": "0",
+            };
+            resolve(false);
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+
+  }
+
+  async updateOrder(order_num: number, notes: string) {
+    return new Promise(async (resolve, reject) => {
+      let params = { token: this.login_user.token }
+      let body = { order_number: order_num, notes: notes }
+      let update = await axios.put(`${globals.urls.deliveries}/emissary_order`, body, { params: params })
+
+    }
+    )
   }
 }
 
