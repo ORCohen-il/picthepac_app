@@ -16,10 +16,12 @@ import { useForm, Controller } from "react-hook-form";
 import { Paragraph, Dialog, Portal, Provider, Card } from "react-native-paper";
 import { order_Model } from "../../models/orderModal";
 import store from "../../mobxState/store";
+import { Picker } from "@react-native-picker/picker";
 
 const Update_dialog = (props) => {
-  const [p_order, setProps] = React.useState(props.order);
-  console.log(p_order);
+  const [propsOrder, setPropsOrder] = React.useState(props.order);
+  // const [selectedValue, setSelectedValue] = React.useState("java");
+
   const hideDialog = () => props.closed(false);
 
   const {
@@ -28,8 +30,8 @@ const Update_dialog = (props) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      order_num: p_order.order_number.toString(),
-      status: p_order.status.toString(),
+      order_num: propsOrder != undefined ? propsOrder.order_number.toString() : "",
+      status: propsOrder ? propsOrder.status : "",
       notes: "",
     },
   });
@@ -50,6 +52,7 @@ const Update_dialog = (props) => {
             </Dialog.Title>
             <Dialog.Content style={styles.content}>
               <View style={styles.formBox}>
+                <Text style={styles.customLabel}>מספר הזמנה</Text>
                 <Controller
                   control={control}
                   rules={{
@@ -67,24 +70,31 @@ const Update_dialog = (props) => {
                   )}
                   name="order_num"
                 />
-                {errors.order_num && <Text>This is required.</Text>}
+                {errors.order_num && <Text> שדה חובה</Text>}
+                <Text style={styles.customLabel}>סטטוס</Text>
                 <Controller
                   control={control}
                   rules={{
                     required: true,
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={"סטטוס"}
-                    />
+                    <View style={styles.pickerBox}>
+                      <Picker
+                        selectedValue={value}
+                        mode={"dropdown"}
+                        style={styles.picker}
+                        // onValueChange={(itemValue, itemIndex) => setProps(itemValue)}
+                        onValueChange={onChange}
+                      >
+                        <Picker.Item label="הסתיים בהצלחה" value="1" />
+                        <Picker.Item label="לקוח לא זמין" value="0" />
+                        <Picker.Item label="אחר" value="3" />
+                      </Picker>
+                    </View>
                   )}
                   name="status"
                 />
-                {errors.status && <Text>This is required.</Text>}
+                {errors.status && <Text> שדה חובה</Text>}
 
                 <Controller
                   control={control}
@@ -139,8 +149,22 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
   },
+  customLabel: {
+    textAlign: "center",
+  },
+  pickerBox: {
+    margin: 5,
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  picker: {
+    textAlign: "center",
+    alignItems: "center",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
   img: {
-    resizeMode: "contain",
+    resizeMode: "stretch",
   },
   button: {
     marginTop: "8%",

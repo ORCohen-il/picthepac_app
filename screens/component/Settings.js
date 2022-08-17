@@ -4,11 +4,13 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  RefreshControl,
   TouchableOpacity,
   I18nManager,
   Linking,
   KeyboardAvoidingView,
   Pressable,
+  TouchableWithoutFeedback,
 } from "react-native";
 import axios from "axios";
 import store from "../../mobxState/store";
@@ -26,14 +28,16 @@ function Settings(props) {
   return (
     <View style={styles.container}>
       <View style={styles.hr} />
-      <Card style={styles.boxOne}>
-        <Card.Title title="הגדרות" subtitle="פרטי משתמש" left={Content1} />
-        <Card.Content style={styles.content}>
-          <Paragraph>{`משתמש : ${store.EmDetails.name}`}</Paragraph>
-          <Paragraph>{`מזהה : ${store.EmDetails.aid}`}</Paragraph>
-          <Paragraph>{`מייל : ${store.EmDetails.email}`}</Paragraph>
-        </Card.Content>
-      </Card>
+      <TouchableWithoutFeedback onPress={() => alert("לעדכון פרטים יש לפנות לתמיכה")}>
+        <Card style={styles.boxOne}>
+          <Card.Title title="הגדרות" subtitle="פרטי משתמש" left={Content1} />
+          <Card.Content style={styles.content}>
+            <Paragraph>{`משתמש : ${store.EmDetails.name}`}</Paragraph>
+            <Paragraph>{`מזהה : ${store.EmDetails.aid}`}</Paragraph>
+            <Paragraph>{`מייל : ${store.EmDetails.email}`}</Paragraph>
+          </Card.Content>
+        </Card>
+      </TouchableWithoutFeedback>
 
       <View style={styles.hr} />
       <Card style={styles.boxTwo}>
@@ -45,7 +49,7 @@ function Settings(props) {
       </Card>
       <View style={styles.hr} />
       <Card style={styles.boxThree}>
-        <Card.Title title="הגדרות" subtitle="פרטי משתמש" left={Content3} />
+        <Card.Title title="תמיכה" left={Content3} />
         <Card.Content style={styles.content}>
           {/* <Paragraph>{`משתמש : ${User.name}`}</Paragraph>
 					<Paragraph>{`מזהה : ${User.aid}`}</Paragraph>

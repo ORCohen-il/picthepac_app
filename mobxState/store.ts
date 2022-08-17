@@ -142,10 +142,10 @@ class Store {
 
   }
 
-  async updateOrder(order_num: number, notes: string) {
+  async updateOrder(order_num: number, notes: string, status: string) {
     return new Promise(async (resolve, reject) => {
       let params = { token: this.login_user.token }
-      let body = { order_number: order_num, notes: notes }
+      let body = { order_number: order_num, notes: notes, status: status }
       let update = await axios.put(`${globals.urls.deliveries}/emissary_order`, body, { params: params })
 
     }

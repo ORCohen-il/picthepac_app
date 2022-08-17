@@ -17,7 +17,6 @@ import {
   TouchableOpacity,
   Dimensions,
   KeyboardAvoidingView,
-  TextInput,
   Button,
   ToastAndroid,
   Alert,
@@ -29,12 +28,8 @@ function Mainpage({ props, navigation }) {
   const [screen, SetScreen] = React.useState(0);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <SafeAreaView style={styles.container}>
-
         <View style={styles.containerBody}>
           {/* <KeyboardAvoidingView behavior='position' style = {{backgroundColor: 'white', flex: 1}}> */}
           <View style={styles.top}>
@@ -57,9 +52,8 @@ function Mainpage({ props, navigation }) {
             {screen === 2 && <Settings navigation={navigation} />}
           </View>
         </View>
-      </SafeAreaView >
+      </SafeAreaView>
     </KeyboardAvoidingView>
-
   );
 }
 
@@ -74,7 +68,7 @@ const styles = StyleSheet.create({
   top: {
     flex: 0.15,
     paddingTop: 20,
-    borderWidth: 4,
+    // borderWidth: 4,
   },
   middle: {
     flex: 0.85,
